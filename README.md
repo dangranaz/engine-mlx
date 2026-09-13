@@ -160,6 +160,15 @@ them to a hard bar for "done," not from expensive tooling.
 
 ---
 
+## ⭐ Support the project
+
+If engine-mlx is useful to you — or if you value seeing a working, honestly
+benchmarked inference engine built on a modest machine — please **give the
+repository a star** and share it. It's the simplest way to help the project
+reach other developers. Feedback, issues, and suggestions are very welcome.
+
+---
+
 ## License
 
 MIT — see [LICENSE](./LICENSE).
