@@ -74,6 +74,58 @@ has friendly `start-server.sh` / `stop-server.sh` wrappers.
 
 ---
 
+## Getting a model
+
+engine-mlx does **not** ship model weights — you download an MLX-format Qwen3
+model yourself. By default the engine looks for models under **`~/models`**, in
+the HuggingFace-style layout:
+
+```
+~/models/<org>/<model-name>/
+    ├── config.json          # required
+    ├── model.safetensors
+    └── tokenizer.json
+```
+
+For example, `~/models/lmstudio-community/Qwen3-1.7B-MLX-4bit/`.
+
+Download one (e.g. with the Hugging Face CLI):
+
+```sh
+# install once:  pip install huggingface_hub
+huggingface-cli download lmstudio-community/Qwen3-1.7B-MLX-4bit \
+  --local-dir ~/models/lmstudio-community/Qwen3-1.7B-MLX-4bit
+```
+
+You can put models anywhere and pass an absolute path, or keep them under
+`~/models` and refer to them by `<org>/<name>` (or a bare unique name). Override
+the search root with the `ENGINE_MLX_MODELS_DIR` environment variable.
+
+### Starting the server with the scripts
+
+Two ready-made options — both bring up the OpenAI-compatible server on
+`http://127.0.0.1:11435`:
+
+**End-user scripts** ([prj-scripts](https://github.com/dangranaz/prj-scripts)) —
+simplest:
+
+```sh
+./engine-mlx/start-server.sh ~/models/lmstudio-community/Qwen3-1.7B-MLX-4bit
+./engine-mlx/stop-server.sh
+```
+
+**Repo scripts** (`scripts/` in this repo) — resolve models by name under
+`~/models`, list/scan them, tail logs:
+
+```sh
+scripts/server.sh models list                     # what's under ~/models
+scripts/server.sh start Qwen3-1.7B-MLX-4bit --release
+scripts/server.sh status
+scripts/server.sh stop
+```
+
+---
+
 ## Workspace layout
 
 | Crate        | Role                                                        |
