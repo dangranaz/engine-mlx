@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  # Stub build/test on Linux: the non-MLX crates must compile and their tests
+  # pass without any Apple/MLX dependency. This is what keeps the codebase
+  # portable and CI-friendly on non-Apple machines.
+  stub-linux:
+    name: stub build + test (ubuntu)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+      - name: Build (stub, no mlx feature)
+        run: cargo build --workspace --locked
+      - name: Test (stub)
+        run: cargo test --workspace --locked
+      - name: Clippy (stub, informational)
+        # Not gating on warnings yet — the codebase has a known clippy-warning
+        # backlog. Clippy runs for visibility; tighten to `-D warnings` once the
+        # backlog is cleared.
+        run: cargo clippy --workspace || true
+
+  # Real end-user flow on Apple Silicon: `brew install mlx-c` then build with
+  # the `mlx` feature. This guarantees the documented quick-start actually
+  # compiles and links against the current Homebrew MLX. Tests that need a GPU
+  # and a downloaded model are not run here (no model on the runner); this is a
+  # build+link gate.
+  mlx-macos:
+    name: mlx build + link (macos, Apple Silicon)
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Install MLX-C (Homebrew)
+        run: brew install mlx-c
+      - name: Build (--features mlx)
+        env:
+          MLX_C_PATH: /opt/homebrew/opt/mlx-c
+          MLX_PREFIX: /opt/homebrew/opt/mlx
+        run: cargo build --workspace --features mlx --locked
