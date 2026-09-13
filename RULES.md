@@ -7,7 +7,8 @@ Coding rules for this project. Every contributor (human or AI) must follow these
 This is a public repository. It MUST NOT contain:
 
 - **Any project documents** — plans, designs, ADRs, research notes, roadmaps.
-  Only `README.md`, `LICENSE`, and the technical repo files below are allowed.
+  Only `README.md`, `LICENSE`, `STORY.md` (see below), and the technical repo
+  files below are allowed.
 - **Any proprietary/experimental technology** — keep advanced or unpublished
   techniques out of this repo entirely.
 - **Any internal references** — no private hostnames, internal repo URLs,
@@ -15,6 +16,10 @@ This is a public repository. It MUST NOT contain:
 
 Allowed technical repo files: `README.md`, `LICENSE`, `CONTEXT.md`,
 `STATUS.md`, `CHANGELOG.md`, `RULES.md`.
+
+**The one narrative exception:** `STORY.md` (and its `STORY_ITA.md` translation)
+is the single project document allowed in public — the story of how and why the
+engine was built. Nothing else document-like goes here.
 
 ## File structure
 
