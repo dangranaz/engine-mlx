@@ -191,13 +191,25 @@ harness to get yours.
 
 ---
 
+## Why Rust
+
+Rust was a deliberate choice, for **robustness**: strong typing, no garbage
+collector, explicit memory ownership, and errors you handle rather than discover
+at runtime — the properties you want in a systems component like an inference
+engine. The honest trade-off: for MLX the **Rust ecosystem is still young**
+compared to Python — bindings are thinner and examples fewer — so more has to be
+built and verified from the primitives. That's a cost, but the robustness (and
+the discipline it forces) is worth it here.
+
+---
+
 ## How this was built
 
-engine-mlx was built by **orchestrating AI coding agents** against objective,
-verifiable acceptance tests — token-exact parity with `mlx_lm`, reproducible
-benchmarks — rather than hand-writing every line. The engineering that mattered
-was choosing the right targets, verifying relentlessly, and reporting results
-(limitations included) honestly.
+engine-mlx was built primarily by **orchestrating AI coding agents** against
+objective, verifiable acceptance tests — token-exact parity with `mlx_lm`,
+reproducible benchmarks — rather than typing every line by hand. The engineering
+that mattered was choosing the right targets, verifying relentlessly, and
+reporting results (limitations included) honestly.
 
 **On a tight hardware budget.** All of this — development *and* the benchmarks —
 was done on a **MacBook Air M1 with 16 GB of unified memory**. That constraint
