@@ -113,7 +113,7 @@ MLX checkpoints of the same shape should load; only the sizes above are tested.
 Real, reproducible numbers live in
 [dangranaz/prj-bench](https://github.com/dangranaz/prj-bench): the exact
 harness, the exact tests, and reference results you can re-run on your own
-hardware. Measured on Apple Silicon, greedy (temperature 0):
+hardware. Measured on a **MacBook Air M1, 16 GB**, greedy (temperature 0):
 
 | Model               | Generation speed | Sustained (20×) | Length ramp 128→1024 |
 |---------------------|------------------|-----------------|----------------------|
@@ -146,6 +146,17 @@ verifiable acceptance tests — token-exact parity with `mlx_lm`, reproducible
 benchmarks — rather than hand-writing every line. The engineering that mattered
 was choosing the right targets, verifying relentlessly, and reporting results
 (limitations included) honestly.
+
+**On a tight hardware budget.** All of this — development *and* the benchmarks —
+was done on a **MacBook Air M1 with 16 GB of unified memory**. That constraint
+is part of the point: it shapes what "works" means (the sustained-load fix, for
+example, was about keeping a live-buffer count flat on limited memory), and it
+shows the engine runs on modest, widely-available hardware.
+
+**Tools.** I work mainly with **OpenCode** and **Pi**, using the free AI models
+available in OpenCode and the free models offered by **NVIDIA** — no paid model
+subscriptions. The leverage comes from steering these agents well and holding
+them to a hard bar for "done," not from expensive tooling.
 
 ---
 
