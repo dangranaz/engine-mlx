@@ -1,78 +1,133 @@
 # engine-mlx
 
-A small, honest LLM inference engine for Apple Silicon, built on Apple's
-[MLX](https://github.com/ml-explore/mlx) framework via its C API (`mlx-c`),
-written in Rust.
+**engine-mlx** is a small, honest LLM inference engine for **Apple Silicon**,
+written in **Rust** on top of Apple's [MLX](https://github.com/ml-explore/mlx)
+framework (via its C API, `mlx-c`). It loads a quantized model, runs prefill and
+decode, and serves an **OpenAI-compatible HTTP API** — so any OpenAI client,
+agent, or harness can talk to it locally. It generates text that matches
+`mlx_lm` **token-for-token** at temperature 0, and ships with a **reproducible
+benchmark** so its performance can be verified, not trusted.
 
-It loads a quantized model, runs prefill and decode, serves an
-OpenAI-compatible HTTP API, and generates text that matches `mlx_lm`
-token-for-token at temperature 0.
+> [!IMPORTANT]
+> **Correctness first, honesty always.** engine-mlx is a reference-quality
+> baseline: readable, auditable, and token-exact with `mlx_lm`. It is **not** a
+> speed record — absolute throughput still trails `mlx_lm`, and the gap is
+> kernel efficiency, not graph overhead. Everything runs **locally** on your
+> Mac: private, offline, OpenAI-compatible.
 
-## What it is
+---
 
-A **reference-quality baseline**: the goal was correctness and clarity, not
-squeezing out every last token/second. It runs Qwen3-class models (0.6B, 1.7B)
-end to end and is easy to read and audit.
+## Features
+
+- **Apple Silicon native** — built on Apple MLX via `mlx-c`, links Metal directly.
+- **OpenAI-compatible** — `/v1/chat/completions`, `/v1/models`, `/health`, SSE streaming.
+- **Token-exact** — matches `mlx_lm` token-for-token at temperature 0 (verified by tests).
+- **Static KV cache by default** — pre-allocated buffers + masked SDPA, so decode
+  throughput doesn't collapse as context grows.
+- **BF16 pipeline**, pipelined `async_eval`, in-graph greedy argmax.
+- **Pure-Rust multi-format tokenizer** (BPE / WordPiece / Unigram), HF-parity tested.
+- **Stable under sustained load** — each request rebuilds fresh state; no buffer
+  accumulation across requests.
+- **Portable core** — the non-MLX crates build and test on Linux (stub mode) for CI.
+
+---
+
+## Requirements
+
+- **macOS on Apple Silicon** (M-series).
+- The MLX C API: `brew install mlx-c`.
+- Rust (`cargo`) to build.
+
+---
+
+## Quick start
+
+```sh
+# 1. install the MLX C API
+brew install mlx-c
+
+# 2. build with the `mlx` feature (the build script auto-detects the Homebrew
+#    MLX prefixes — no manual paths needed)
+cargo build --release --features mlx
+
+# 3. run the server on a model directory (must contain config.json)
+cargo run --release --features mlx -p engine-mlx-serve -- \
+  --model /path/to/Qwen3-1.7B-MLX-4bit
+#    → serves http://127.0.0.1:11435
+```
+
+Then call it like any OpenAI endpoint:
+
+```sh
+curl -s http://127.0.0.1:11435/v1/chat/completions \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "model": "Qwen3-1.7B-MLX-4bit",
+    "messages": [{"role": "user", "content": "Explain quantum computing in one sentence."}],
+    "max_tokens": 64,
+    "temperature": 0
+  }'
+```
+
+Prefer scripts? [dangranaz/prj-scripts](https://github.com/dangranaz/prj-scripts)
+has friendly `start-server.sh` / `stop-server.sh` wrappers.
+
+---
+
+## Workspace layout
 
 | Crate        | Role                                                        |
 |--------------|-------------------------------------------------------------|
-| `mlx-ffi`    | MLX-C bindings (bindgen) + `MlxCtx` real ops / Metal link   |
-| `ops`        | Atomic ops (quantized matmul, RoPE, SDPA, RMSNorm, …)       |
+| `mlx-ffi`    | MLX-C bindings (bindgen) + `MlxCtx` real ops / Metal link    |
+| `ops`        | Atomic ops (quantized matmul, RoPE, SDPA, RMSNorm, …)        |
 | `attention`  | Attention layers (GQA, sliding window, gated)               |
 | `kvcache`    | KV cache backends (concat, fp8, rotating)                   |
 | `prefill`    | Prefill pipeline (prefix cache + chunked batch prefill)     |
-| `serve`      | Qwen3 engine + model loader + OpenAI HTTP server + bench    |
+| `serve`      | Qwen3 engine + model loader + OpenAI HTTP server            |
 | `modelplan`  | Model introspection → `ModelManifest` (vendored)            |
 | `tokenizer`  | Pure-Rust multi-format tokenizer, HF-parity (vendored)      |
 
-## Status
+Without the `mlx` feature the workspace builds against stubs — useful for CI on
+non-Apple machines and for compiling the non-MLX crates.
 
-- End-to-end forward pass works: load → embed → prefill → decode.
-- **Token-exact vs `mlx_lm`** (`--temp 0 --ignore-chat-template`) on Qwen3-0.6B
-  and Qwen3-1.7B.
-- Static KV cache by default (pre-allocated buffers + masked SDPA), so decode
-  throughput doesn't collapse as the context grows.
-- BF16 pipeline end to end; pipelined `async_eval`.
+---
 
-Measured on Apple Silicon (indicative, reproduce with the bench harness):
-Qwen3-0.6B ~57 t/s eager, ~55 t/s compiled decode.
+## Benchmarks
+
+Real, reproducible numbers live in
+[dangranaz/prj-bench](https://github.com/dangranaz/prj-bench): the exact
+harness, the exact tests, and reference results you can re-run on your own
+hardware.
+
+Indicative (Apple Silicon):
+
+| Model               | Throughput | Sustained degradation | Length ramp |
+|---------------------|------------|-----------------------|-------------|
+| Qwen3-1.7B-MLX-4bit | ~32–40 t/s | ~8%                   | ~16%        |
+| Qwen3-0.6B-MLX-4bit | ~55–57 t/s | —                     | —           |
+
+`mlx_lm` is still faster in absolute throughput; the gap is kernel efficiency.
+
+---
 
 ## Honest limitations
 
-- This is a baseline, not a speed record. `mlx_lm` is still faster in absolute
-  throughput — the gap is kernel efficiency, not graph overhead.
-- No long-context offload: very large prompts / contexts beyond RAM are not
-  handled (there is no disk spill). Standard prompts are fine.
-- The MLX-C C API doesn't expose the graph fusions available in Python
-  `mx.compile`, which caps some optimizations.
+- Not a speed record — a correctness-first baseline.
+- No long-context disk offload: very large contexts beyond RAM are out of scope.
+- The MLX-C C API doesn't expose the graph fusions of Python `mx.compile`, which
+  caps some optimizations.
 
-## Build
-
-```bash
-# macOS with Apple Silicon
-brew install mlx-c
-
-cargo build --release --features mlx
-```
-
-Without the `mlx` feature the workspace builds against stubs (useful for CI on
-non-Apple machines and for compiling the non-MLX crates).
-
-## Run
-
-```bash
-cargo run --release --features mlx -p engine-mlx-serve -- \
-  --model /path/to/Qwen3-0.6B-MLX-4bit
-# then POST to the OpenAI-compatible /v1/chat/completions endpoint
-```
+---
 
 ## How this was built
 
-This engine was built by **orchestrating AI coding agents** against objective,
+engine-mlx was built by **orchestrating AI coding agents** against objective,
 verifiable acceptance tests — token-exact parity with `mlx_lm`, reproducible
 benchmarks — rather than hand-writing every line. The engineering that mattered
 was choosing the right targets, verifying relentlessly, and reporting results
-(including limitations) honestly.
+(limitations included) honestly.
+
+---
 
 ## License
 
