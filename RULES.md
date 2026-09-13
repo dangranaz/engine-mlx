@@ -17,9 +17,9 @@ This is a public repository. It MUST NOT contain:
 Allowed technical repo files: `README.md`, `LICENSE`, `CONTEXT.md`,
 `STATUS.md`, `CHANGELOG.md`, `RULES.md`.
 
-**The one narrative exception:** `STORY.md` (and its `STORY_ITA.md` translation)
-is the single project document allowed in public — the story of how and why the
-engine was built. Nothing else document-like goes here.
+**The one narrative exception:** `STORY.md` is the single project document
+allowed in public — the story of how and why the engine was built, in English
+only. Nothing else document-like goes here.
 
 ## File structure
 

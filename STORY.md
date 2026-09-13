@@ -17,6 +17,24 @@ Alongside it I published:
 
 All three have green CI.
 
+## Why I'm building this
+
+The goal is **real local AI on consumer computers — for everyone.** Inference
+that runs on the machine people already own, without shipping their data to the
+cloud and without depending on frontier models behind paid APIs.
+
+Starting on limited hardware wasn't an accident, and it shaped everything: if it
+runs well on a 16 GB MacBook Air, it runs on the laptops most people and small
+teams actually have. I also wanted to **learn frontier technology independently
+— without depending on paid APIs or expensive hardware** to do it.
+
+And it's meant to be a **foundation, not a demo.** A small, correct, auditable
+engine like this is a base you can build vertical products on — for small and
+medium businesses — and it scales naturally: swap in **open-weight models from
+labs around the world** (Qwen, and others) instead of renting frontier models
+from the cloud. That's the bet: local, private, affordable AI as a real
+alternative, not a compromise.
+
 ## The honest part
 
 I built engine-mlx primarily by **orchestrating AI coding agents** — guiding

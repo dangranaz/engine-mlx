@@ -205,8 +205,8 @@ the discipline it forces) is worth it here.
 
 ## How this was built
 
-> The full story — the method, the hardware constraint, and the bug that proves
-> the point — is in **[STORY.md](./STORY.md)** ([italiano](./STORY_ITA.md)).
+> The full story — the purpose, the method, the hardware constraint, and the bug
+> that proves the point — is in **[STORY.md](./STORY.md)**.
 
 engine-mlx was built primarily by **orchestrating AI coding agents** against
 objective, verifiable acceptance tests — token-exact parity with `mlx_lm`,
