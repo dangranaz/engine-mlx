@@ -92,21 +92,41 @@ non-Apple machines and for compiling the non-MLX crates.
 
 ---
 
-## Benchmarks
+## Supported models
+
+engine-mlx targets the **Qwen3** family (dense) in MLX format. These are the
+configurations that are actually exercised and verified:
+
+| Model      | Quantization | Status                                  |
+|------------|--------------|-----------------------------------------|
+| Qwen3-0.6B | 4-bit (MLX)  | ✅ verified, token-exact vs `mlx_lm`    |
+| Qwen3-1.7B | 4-bit (MLX)  | ✅ verified, token-exact vs `mlx_lm`    |
+| Qwen3-1.7B | 8-bit (MLX)  | ✅ verified (4/8-bit read from config)  |
+
+The loader reads `group_size` / `bits` from the model config, so other Qwen3
+MLX checkpoints of the same shape should load; only the sizes above are tested.
+
+---
+
+## Benchmarks — generation speed
 
 Real, reproducible numbers live in
 [dangranaz/prj-bench](https://github.com/dangranaz/prj-bench): the exact
 harness, the exact tests, and reference results you can re-run on your own
-hardware.
+hardware. Measured on Apple Silicon, greedy (temperature 0):
 
-Indicative (Apple Silicon):
+| Model               | Generation speed | Sustained (20×) | Length ramp 128→1024 |
+|---------------------|------------------|-----------------|----------------------|
+| Qwen3-1.7B-MLX-4bit | ~34–41 t/s       | ~6% degradation | ~16% drop            |
+| Qwen3-0.6B-MLX-4bit | ~55–57 t/s       | —               | —                    |
 
-| Model               | Throughput | Sustained degradation | Length ramp |
-|---------------------|------------|-----------------------|-------------|
-| Qwen3-1.7B-MLX-4bit | ~32–40 t/s | ~8%                   | ~16%        |
-| Qwen3-0.6B-MLX-4bit | ~55–57 t/s | —                     | —           |
+- **Generation speed** = decode tokens/second.
+- **Sustained** = 20 identical requests; throughput must not drift (leak guard).
+- **Length ramp** = throughput across 128 / 512 / 1024 output tokens (KV scaling).
 
-`mlx_lm` is still faster in absolute throughput; the gap is kernel efficiency.
+`mlx_lm` is still faster in absolute throughput; the gap is kernel efficiency,
+not graph overhead. Numbers depend on your chip and thermal state — re-run the
+harness to get yours.
 
 ---
 
