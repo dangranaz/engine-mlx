@@ -1,0 +1,25 @@
+[package]
+name = "nxm-modelplan"
+version = "0.1.0"
+edition = "2021"
+description = "Model introspection: static analysis of model directories to produce engine plans"
+license = "MIT"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml = "1"
+safetensors = "0.8"
+memmap2 = "0.9"
+anyhow = "1"
+sha2 = "0.10"
+
+[dependencies.clap]
+version = "4"
+features = ["derive"]
+optional = true
+
+[[bin]]
+name = "nxm-modelplan"
+path = "src/bin/main.rs"
+required-features = ["clap"]
