@@ -1,0 +1,8 @@
+{
+  "profile": "tiny",
+  "description": "Tiny models (<=1B, e.g. Qwen3-0.6B). Engine health MUST pass; model-capability tests are advisory (allowed to fail).",
+  "min_tps": 40,
+  "must_pass": ["api_chat_completions", "api_error_handling", "perf_decode_latency", "sustained", "length_ramp"],
+  "advisory": ["factual", "instruction", "coherence", "coherence_hurl"],
+  "notes": "Overall FAIL is NORMAL for tiny models. A run is HEALTHY iff all must_pass tests pass and no output is garbage. Garbage output in any test => engine bug."
+}

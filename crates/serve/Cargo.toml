@@ -1,0 +1,36 @@
+[package]
+name = "engine-mlx-serve"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "MLX-C inference server — OpenAI-compatible HTTP API"
+
+[[bin]]
+name = "nxm-engine-mlx"
+path = "src/main.rs"
+
+[features]
+default = []
+mlx = ["engine-mlx-ffi/mlx", "engine-mlx-ops/mlx", "engine-mlx-kvcache/mlx", "engine-mlx-attention/mlx"]
+
+[dependencies]
+engine-mlx-ffi = { workspace = true }
+engine-mlx-ops = { workspace = true }
+engine-mlx-attention = { workspace = true }
+engine-mlx-prefill = { workspace = true }
+engine-mlx-kvcache = { workspace = true }
+nxm-modelplan = { workspace = true }
+nxm-tokenizer = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+tokio = { workspace = true }
+axum = { workspace = true }
+tower-http = { workspace = true }
+futures = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+uuid = { workspace = true }
+safetensors = { workspace = true }
+memmap2 = { workspace = true }
+tokenizers = { workspace = true }

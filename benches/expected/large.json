@@ -1,0 +1,8 @@
+{
+  "profile": "large",
+  "description": "Large models (>=7B). Everything MUST pass: engine health, correctness, and coherence.",
+  "min_tps": 15,
+  "must_pass": ["api_chat_completions", "api_error_handling", "perf_decode_latency", "sustained", "length_ramp", "factual", "instruction", "coherence", "coherence_hurl"],
+  "advisory": [],
+  "notes": "A capable model on a healthy engine should pass all tests. Any FAIL is worth investigating. min_tps is lower because larger models are inherently slower per token."
+}

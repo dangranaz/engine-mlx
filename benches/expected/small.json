@@ -1,0 +1,8 @@
+{
+  "profile": "small",
+  "description": "Small models (1-4B, e.g. Qwen3-1.7B). Engine health + basic correctness MUST pass; multi-step reasoning is advisory.",
+  "min_tps": 25,
+  "must_pass": ["api_chat_completions", "api_error_handling", "perf_decode_latency", "sustained", "length_ramp", "factual"],
+  "advisory": ["instruction", "coherence", "coherence_hurl"],
+  "notes": "Basic factual recall should pass. Multi-step reasoning may still fail. Degradation must always pass."
+}

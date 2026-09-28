@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Stop the engine-mlx server started for Qwen3-0.6B-MLX-4bit.
+set -euo pipefail
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ENGINE=engine-mlx exec "$HERE/../stop.sh"
