@@ -17,6 +17,17 @@ benchmark** so its performance can be verified, not trusted.
 
 ---
 
+## How it works — from prompt to decode
+
+![engine-mlx inference flow: CPU orchestration and GPU (MLX/Metal) compute, from prompt and tokenize through embed, prefill, and the autoregressive decode loop with a static KV cache, to logits, sampling, and SSE streaming](docs/engine-mlx-flow.png)
+
+Two lanes — **CPU** handles the OpenAI API, tokenization, sampling, and SSE
+streaming; **GPU (MLX/Metal)** runs embed, prefill, and the autoregressive
+decode loop (GQA + masked SDPA) against a pre-allocated static KV cache, with an
+in-graph greedy argmax feeding the next token back into the loop.
+
+---
+
 ## Features
 
 - **Apple Silicon native** — built on Apple MLX via `mlx-c`, links Metal directly.
