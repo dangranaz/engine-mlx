@@ -1,0 +1,8 @@
+{{- bos_token }}
+{% for message in messages %}
+{% generation %}X{{ message.role }}: {{ message.content }}
+{%- endgeneration -%}
+{%- if add_generation_prompt -%}
+assistant:
+{%- endif -%}
+{% endfor %}

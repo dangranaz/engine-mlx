@@ -1,0 +1,1 @@
+{"chat_template": "{{ bos_token }}{% for m in messages %}{{ m.role }}: {{ m.content }}{% endfor %}", "bos_token": {"content": "<|ifm|begin_of_text|>"}}

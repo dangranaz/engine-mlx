@@ -1,0 +1,2 @@
+user: Name three capital cities of European countries.
+assistant: 

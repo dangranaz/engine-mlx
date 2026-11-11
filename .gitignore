@@ -1,0 +1,13 @@
+target/
+.poolside/
+scripts/.run/
+
+# Local workflow artifacts (not part of the public repo — see RULES.md).
+# Delegation briefs, external-review documents, nxm-session state, and
+# generated diagrams/archify output are working artifacts kept out of the
+# public source tree.
+prompts/
+semantic-review/
+sessions/
+.archify/
+diagrams/

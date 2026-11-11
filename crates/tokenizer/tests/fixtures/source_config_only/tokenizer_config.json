@@ -1,0 +1,1 @@
+{"chat_template": "user: {{ message.content }}", "bos_token": ""}

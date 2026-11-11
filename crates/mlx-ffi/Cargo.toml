@@ -1,0 +1,18 @@
+[package]
+name = "engine-mlx-ffi"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "MLX-C FFI bindings for engine-mlx (auto-generated via bindgen)"
+links = "mlxc"
+
+[features]
+default = []
+mlx = []
+
+[dependencies]
+anyhow = { workspace = true }
+tracing = { workspace = true }
+
+[build-dependencies]
+bindgen = "0.72"

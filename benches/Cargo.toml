@@ -1,0 +1,24 @@
+[package]
+name = "engine-bench"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Cross-engine OpenAI-compatible HTTP benchmark: 5 standard tests, timestamped JSON+MD reports, optional pass/fail asserts."
+
+[[bin]]
+name = "nxm-bench"
+path = "src/main.rs"
+
+[dependencies]
+# Blocking HTTP with TLS off (local servers) + streaming body reads for SSE TTFT.
+ureq = { version = "2.10", features = ["json"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+regex = "1"
+clap = { version = "4", features = ["derive"] }
+chrono = { version = "0.4", features = ["clock"] }
+toml = "0.8"
+anyhow = "1"
+
+[profile.release]
+opt-level = 3

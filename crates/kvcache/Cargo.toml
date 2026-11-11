@@ -1,0 +1,17 @@
+[package]
+name = "engine-mlx-kvcache"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "KV cache backends for MLX-C — concat, rotating, fp8"
+
+[features]
+default = []
+mlx = ["engine-mlx-ffi/mlx", "engine-mlx-ops/mlx"]
+
+[dependencies]
+engine-mlx-ffi = { workspace = true }
+engine-mlx-ops = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+half = { workspace = true }

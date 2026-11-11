@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "truncation": null,
+  "padding": null,
+  "added_tokens": [
+    {"id": 0, "content": "[UNK]", "special": true},
+    {"id": 1, "content": "[system]", "special": true},
+    {"id": 2, "content": "[user]", "special": true},
+    {"id": 3, "content": "[assistant]", "special": true},
+    {"id": 4, "content": "You", "special": false},
+    {"id": 5, "content": "are", "special": false},
+    {"id": 6, "content": "a", "special": false},
+    {"id": 7, "content": "helpful", "special": false},
+    {"id": 8, "content": "assistant.", "special": false},
+    {"id": 9, "content": "Name", "special": false},
+    {"id": 10, "content": "three", "special": false},
+    {"id": 11, "content": "European", "special": false},
+    {"id": 12, "content": "capitals.", "special": false},
+    {"id": 13, "content": "hi", "special": false}
+  ],
+  "normalizer": null,
+  "pre_tokenizer": {"type": "WhitespaceSplit"},
+  "post_processor": null,
+  "decoder": null,
+  "model": {"type": "BPE", "vocab": {"[UNK]":0, "[system]":1, "[user]":2, "[assistant]":3, "You":4, "are":5, "a":6, "helpful":7, "assistant.":8, "Name":9, "three":10, "European":11, "capitals.":12, "hi":13}, "merges": [], "unk_token": "[UNK]"}
+}

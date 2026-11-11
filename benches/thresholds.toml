@@ -1,0 +1,13 @@
+# engine-bench pass/fail thresholds (used only with --assert).
+# Override any of these on the CLI: --min-tps, --max-degradation-pct.
+
+# Minimum tokens/sec any single request must sustain (degradation tests).
+min_tps = 20.0
+
+# Max % throughput may drop from the fastest to the slowest request in the
+# sustained test. Guards against per-request memory leaks / slowdown.
+max_degradation_pct = 15.0
+
+# Max % throughput drop across the length ramp (shortest → longest sequence).
+# KV-cache scaling naturally reduces t/s at long sequences, so this is looser.
+max_ramp_drop_pct = 60.0

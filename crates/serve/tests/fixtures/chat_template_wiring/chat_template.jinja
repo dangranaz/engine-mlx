@@ -1,0 +1,2 @@
+{% for m in messages %}[{{ m.role }}] {{ m.content }}
+{% endfor %}{% if add_generation_prompt %}[assistant] {% endif %}

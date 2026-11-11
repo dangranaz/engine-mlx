@@ -1,0 +1,24 @@
+[package]
+name = "nxm-tokenizer"
+description = "Pure-Rust multi-format tokenizer (BPE/WordPiece/Unigram), HF-parity"
+version = { workspace = true }
+edition = "2021"
+license = "MIT"
+
+[dependencies]
+thiserror = "2"
+anyhow = "1"
+tracing = { workspace = true }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+fancy-regex = "0.14"
+unicode-normalization = "0.1"
+minijinja = { workspace = true }
+tokenizers = { version = "0.23", default-features = false, features = ["onig"] }
+
+[dev-dependencies]
+criterion = "0.5"
+
+[[bench]]
+name = "bench_vs_hf"
+harness = false

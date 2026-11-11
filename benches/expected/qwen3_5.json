@@ -1,0 +1,8 @@
+{
+  "profile": "qwen3_5",
+  "description": "Qwen3.5-9B hybrid (Gated DeltaNet + gated full-attention) on engine-mlx. Correctness and coherence MUST pass (token-exact vs mlx_lm is proven by engine-mlx tests); throughput floor is set for the current EAGER (uncompiled) hybrid forward, which is intentionally lower than the dense Qwen3 path.",
+  "min_tps": 3,
+  "must_pass": ["api_chat_completions", "api_error_handling", "sustained", "length_ramp", "factual", "instruction", "coherence", "coherence_hurl"],
+  "advisory": ["perf_decode_latency"],
+  "notes": "This is a dedicated profile for the Qwen3.5 hybrid architecture. Correctness (factual/instruction) and coherence are hard requirements — the engine is token-exact with mlx_lm at temperature 0. min_tps is 3 because the hybrid forward is eager (every op is a separate Metal dispatch, and the GDN recurrent scan is not fused); the one-time MLX JIT warmup (~15s on first request per process) is excluded from steady-state throughput. perf_decode_latency is advisory until a compiled decode step lands. Do NOT compare these t/s against the dense Qwen3 numbers — different regime."
+}
